@@ -7,6 +7,7 @@ tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp-build/include/vis
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp-build/include/visp/vpDisplayX.h
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp-build/include/visp/vpImage.h
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp-build/include/visp/vpImageConvert.h
+tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp-build/include/visp/vpImageDraw.h
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp-build/include/visp/vpImageFilter.h
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp-build/include/visp/vpImageIo.h
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp-build/include/visp3/core/vpConfig.h
@@ -24,6 +25,7 @@ tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp/modules/core/incl
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp/modules/core/include/visp3/core/vpHomogeneousMatrix.h
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp/modules/core/include/visp3/core/vpImage.h
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp/modules/core/include/visp3/core/vpImageConvert.h
+tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp/modules/core/include/visp3/core/vpImageDraw.h
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp/modules/core/include/visp3/core/vpImageException.h
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp/modules/core/include/visp3/core/vpImageFilter.h
 tp/CMakeFiles/tp_klt.dir/tp_klt.cpp.o: /usr/local/visp-ws/visp/modules/core/include/visp3/core/vpImagePoint.h

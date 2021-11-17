@@ -9,6 +9,8 @@
 /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/tp/tp_klt.cpp
 iostream
 -
+vector
+-
 visp/vpConfig.h
 -
 visp/vpDebug.h
@@ -24,6 +26,8 @@ visp3/core/vpUniRand.h
 visp/vpImageFilter.h
 -
 visp/vpImageConvert.h
+-
+visp/vpImageDraw.h
 -
 
 /usr/local/visp-ws/visp-build/include/visp/vpConfig.h
@@ -44,6 +48,10 @@ visp3/core/vpImage.h
 
 /usr/local/visp-ws/visp-build/include/visp/vpImageConvert.h
 visp3/core/vpImageConvert.h
+-
+
+/usr/local/visp-ws/visp-build/include/visp/vpImageDraw.h
+visp3/core/vpImageDraw.h
 -
 
 /usr/local/visp-ws/visp-build/include/visp/vpImageFilter.h
@@ -352,6 +360,18 @@ yarp/sig/Image.h
 WinSock2.h
 -
 windows.h
+-
+
+/usr/local/visp-ws/visp/modules/core/include/visp3/core/vpImageDraw.h
+visp3/core/vpImage.h
+-
+visp3/core/vpColor.h
+-
+visp3/core/vpMath.h
+-
+visp3/core/vpRect.h
+-
+visp3/core/vpCameraParameters.h
 -
 
 /usr/local/visp-ws/visp/modules/core/include/visp3/core/vpImageException.h
