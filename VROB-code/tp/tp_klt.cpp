@@ -101,19 +101,21 @@ vpImage<double> harris_detector(vpImage<unsigned char>& I) {
     return R;
 }
 
-std::vector<vpImagePoint> Harris(vpImage<double>& I, double seuil) {
+std::vector<vpImagePoint> Harris(vpImage<double>& I, double seuil, int tailleFenetre) {
     //Seuillage
     std::vector<vpImagePoint> res;
-
+    int moitie = (int)(tailleFenetre/2);
     for(int i = 0; i < I.getRows(); i++) {
         for (int j = 0; j < I.getCols(); j++) {
-            if(I[i][j] < seuil) I[i][j] = 0;
+            if(I[i][j] < seuil || i-moitie < 0 || i+moitie >= I.getRows() || j-moitie < 0 || j+moitie >= I.getCols()) {
+                I[i][j] = 0;
+            }
         }
     }
     //Calcul max locaux
     for(int i = 0; i < I.getRows(); i++) {
         for (int j = 0; j < I.getCols(); j++) {
-            maxLocale(I,i,j,11);
+            maxLocale(I,i,j,tailleFenetre);
         }
     }
 
@@ -131,32 +133,33 @@ std::vector<vpImagePoint> Harris(vpImage<double>& I, double seuil) {
 
 }
 
-std::vector<vpImagePoint> afficheHarris(vpImage<unsigned char>& I, double seuil){
+std::vector<vpImagePoint> afficheHarris(vpImage<unsigned char>& I, double seuil, vpImage<vpRGBa> & Ires){
 //TRAITEMENT HARRIS
     vpImage<double> Iharris = harris_detector(I);
 
-    std::vector<vpImagePoint> ptHarris = Harris(Iharris,seuil);
+    std::vector<vpImagePoint> ptHarris = Harris(Iharris,seuil,11);
 //FIN TRAITEMENT HARRIS
 
-    vpImage<vpRGBa> Ires(I.getRows(), I.getCols());
+//A SUPPRIMER, UTILE POUR TEST
+    std::vector<vpImagePoint> newPt;
+    newPt.push_back(ptHarris[int(ptHarris.size()/2)]);
+    ptHarris = newPt;
+
+    
     vpImageConvert::convert(I, Ires);
 
     for(auto pt : ptHarris){
         vpImageDraw::drawCross(Ires,pt,5,vpColor::green);
     }
 
-    vpDisplayX d(Ires,100,100);
-	vpDisplay::setTitle(Ires, "Harris");
-	vpDisplay::display(Ires);
-	vpDisplay::flush(Ires) ;	
-    vpDisplay::getClick(Ires);
-
     return ptHarris;
 }
 
 //TODO: a modifier pour h
-vpImage<unsigned char> createTemplate(vpImage<unsigned char>& I,vpImagePoint pt,int tailleFenetre, vpColVector h){
-    vpImage<unsigned char> newtemplate(tailleFenetre,tailleFenetre);
+vpImage<double> createTemplate(vpImage<unsigned char>& Iuc,vpImagePoint pt,int tailleFenetre, vpColVector h){
+    vpImage<double> I;
+    vpImageConvert::convert(Iuc,I);
+    vpImage<double> newtemplate(tailleFenetre,tailleFenetre);
     int iT = 0;
     int jT = 0;
     int i = pt.get_i();
@@ -172,7 +175,24 @@ vpImage<unsigned char> createTemplate(vpImage<unsigned char>& I,vpImagePoint pt,
     return newtemplate;
 }
 
-double EQM(vpImage<unsigned char> I0, vpImage<unsigned char> I1){
+vpImage<double> createTemplate(vpImage<double>& I,vpImagePoint pt,int tailleFenetre, vpColVector h){
+    vpImage<double> newtemplate(tailleFenetre,tailleFenetre);
+    int iT = 0;
+    int jT = 0;
+    int i = pt.get_i();
+    int j = pt.get_j();
+    for(int k = i - (int)(tailleFenetre/2); k <= i + (int)(tailleFenetre/2); k++) {
+        jT = 0;
+        for(int l = j - (int)(tailleFenetre/2); l <= j + (int)(tailleFenetre/2); l++) {
+            newtemplate[iT][jT] = I.getValue(h[0]+k, h[1]+l);
+            jT++;
+        }
+        iT++;
+    }
+    return newtemplate;
+}
+
+double EQM(vpImage<double> I0, vpImage<double> I1){
     assert(I0.getRows() == I1.getRows() && I0.getCols() == I1.getCols());  
     double eqm = 0;
     for(int i = 0; i < I0.getRows(); i++) {
@@ -184,60 +204,87 @@ double EQM(vpImage<unsigned char> I0, vpImage<unsigned char> I1){
     return eqm;  
 }
 
-vpColVector erreurImages(vpImage<unsigned char> I0, vpImage<unsigned char> I1) {
+vpColVector erreurImages(vpImage<double> I0, vpImage<double> I1) {
     assert(I0.getRows() == I1.getRows() && I0.getCols() == I1.getCols());  
     vpColVector e(I0.getRows()*I0.getCols());
     int indE = 0;
     for(int i = 0; i < I0.getRows(); i++) {
         for(int j = 0; j < I0.getCols(); j++) {
-            e[indE] = abs(I0[i][j]-I1[i][j]);
+            e[indE] = (I1[i][j]-I0[i][j]);
             indE++;
         }
     }
     return e; 
 }
 
-vpMatrix jacobienne(vpImage<unsigned char>& I) {
-    cout << I << endl;
-    vpImage<double> newTemplateGradX;
-    vpImageFilter::getGradX(I, newTemplateGradX);
-    vpImage<double> newTemplateGradY;
-    vpImageFilter::getGradY(I, newTemplateGradY);
-
-    vpMatrix jacob(I.getRows()*I.getCols(), 2);
-
+vpMatrix jacobienne(vpImage<double>& I, vpImage<double>& IgradX, vpImage<double>& IgradY) {
+   vpMatrix jacob(I.getRows()*I.getCols(), 2);
+    
     int indJ = 0;
     for(int i = 0; i < I.getRows(); i++) {
         for(int j = 0; j < I.getCols(); j++) {
-            jacob[indJ][0] = newTemplateGradX[i][j];
-            jacob[indJ][1] = newTemplateGradY[i][j];
+            cout << "IgradX : " << IgradX[i][j] << "IgradY : " << IgradY[i][j] << endl;
+            jacob[indJ][0] = IgradX[i][j];
+            jacob[indJ][1] = IgradY[i][j];
             indJ++;
         }
     }
-
+    cout << jacob << endl << endl;
     vpMatrix jacobPI = jacob.pseudoInverse();
     return jacobPI;
 }
 
+double norm(vpColVector v) {
+    double n = 0;
+    for(int i = 0; i < v.size(); i++) {
+        n += pow(v[i],2);
+    }
+    n = sqrt(n);
+    return n;
+}
+
 std::vector<vpImagePoint> KLT(vpImage<unsigned char>& I0,vpImage<unsigned char>& I, std::vector<vpImagePoint> harrisPoints, int tailleFenetre){
     std::vector<vpImagePoint> newHarrisPoints;
-    for(auto pt : harrisPoints){
-        vpColVector h(2);
-        vpImage<unsigned char> templateRef = createTemplate(I0,pt,tailleFenetre,h);
-        vpImage<unsigned char> newtemplate = createTemplate(I,pt,tailleFenetre,h); 
 
+    vpImage<double> IgradX;
+    vpImageFilter::getGradX(I, IgradX);
+    vpImage<double> IgradY;
+    vpImageFilter::getGradY(I, IgradY);
+
+    vpImage<double> templateIgradX;
+    vpImage<double> templateIgradY;
+
+    vpColVector un(2,1);
+
+    for(auto pt : harrisPoints){
+        vpColVector h(2,0);
+        vpColVector dh = h + un;
+        vpImage<double> templateRef = createTemplate(I0,pt,tailleFenetre,h);
+        vpImage<double> newtemplate = createTemplate(I,pt,tailleFenetre,h); 
+        vpColVector oldH = h+un;
         double eqm = EQM(templateRef, newtemplate);
-        while(eqm > 8) {
+        int i =0;
+        while(norm(h-oldH) > 0.00001) {
+            cout << norm(h-oldH)  << endl;
+            i++;
             vpColVector erreurTemplates = erreurImages(templateRef, newtemplate);
-            vpMatrix jacob = jacobienne(newtemplate);
-            vpColVector dh = - jacob*erreurTemplates;
+
+            templateIgradX = createTemplate(IgradX,pt,tailleFenetre,h);
+            templateIgradY = createTemplate(IgradY,pt,tailleFenetre,h);
+
+            vpMatrix jacob = jacobienne(newtemplate, templateIgradX, templateIgradY);
+            vpColVector dh = -jacob*erreurTemplates;
+            //cout << dh << endl;
+            oldH = h;
             h = h+dh;
             //cout << "dh[0] = " << dh[0] << " dh[1] = " << dh[1] << endl;
 
-            newtemplate = createTemplate(I,pt,tailleFenetre,h); 
+            newtemplate = createTemplate(I,pt,tailleFenetre,h);
             eqm = EQM(templateRef, newtemplate);
-            cout << eqm << endl;
+            //cout << eqm << endl;
         }
+        cout << "old : "<< pt.get_i()<< " ; " <<pt.get_j() << endl;
+        cout << "new : "<< pt.get_i() + h[0]<<" ; " <<pt.get_j()+h[1] << endl;
         vpImagePoint newPoint(pt.get_i()+h[0], pt.get_j()+h[1]);
         newHarrisPoints.push_back(newPoint);
     }
@@ -250,21 +297,29 @@ int main(int argc, char **argv)
     vpImageIo::read(I1,"images/image.0001.pgm"); 
     vpImage<unsigned char>  I2;
     vpImageIo::read(I2,"images/image.0002.pgm");
-    std::vector<vpImagePoint> ptsHarris = afficheHarris(I1, 50000);
+    vpImage<vpRGBa> IresHARRIS(I1.getRows(), I1.getCols());
+    std::vector<vpImagePoint> ptsHarris = afficheHarris(I1, 50000,IresHARRIS);
 
-    std::vector<vpImagePoint> newHarrisPoints = KLT(I1,I2,ptsHarris,5);
-    vpImage<vpRGBa> Ires(I1.getRows(), I1.getCols());
-    vpImageConvert::convert(I2, Ires);
+
+
+    vpDisplayX d(IresHARRIS,100,100);
+    vpDisplay::setTitle(IresHARRIS, "Harris");
+	vpDisplay::display(IresHARRIS);
+    vpDisplay::getClick(IresHARRIS);
+
+    std::vector<vpImagePoint> newHarrisPoints = KLT(I1,I2,ptsHarris,3);
+    vpImage<vpRGBa> IresKLT(I1.getRows(), I1.getCols());
+    vpImageConvert::convert(I2, IresKLT);
 
     for(auto pt : newHarrisPoints){
-        vpImageDraw::drawCross(Ires,pt,5,vpColor::green);
+        vpImageDraw::drawCross(IresKLT,pt,5,vpColor::green);
     }
-
-    vpDisplayX d(Ires,100,100);
-	vpDisplay::setTitle(Ires, "KLT");
-	vpDisplay::display(Ires);
-	vpDisplay::flush(Ires) ;	
-    vpDisplay::getClick(Ires);
+    
+    vpDisplayX d2(IresKLT,100,100);
+	vpDisplay::setTitle(IresKLT, "KLT");
+	vpDisplay::display(IresKLT);
+	vpDisplay::flush(IresKLT) ;	
+    vpDisplay::getClick(IresKLT);
 }
 
 
