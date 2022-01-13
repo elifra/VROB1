@@ -159,6 +159,19 @@ html-doc/fast:
 .PHONY : html-doc/fast
 
 #=============================================================================
+# Target rules for targets named av-v0
+
+# Build rule for target.
+av-v0: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 av-v0
+.PHONY : av-v0
+
+# fast build rule for target.
+av-v0/fast:
+	$(MAKE) -f tp/CMakeFiles/av-v0.dir/build.make tp/CMakeFiles/av-v0.dir/build
+.PHONY : av-v0/fast
+
+#=============================================================================
 # Target rules for targets named tp_klt
 
 # Build rule for target.
@@ -209,6 +222,7 @@ help:
 	@echo "... package"
 	@echo "... uninstall"
 	@echo "... html-doc"
+	@echo "... av-v0"
 	@echo "... tp_klt"
 	@echo "... tp1"
 	@echo "... tp0-exemple"

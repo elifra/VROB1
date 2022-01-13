@@ -133,6 +133,21 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+tp/CMakeFiles/av-v0.dir/rule:
+	cd /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code && $(MAKE) -f CMakeFiles/Makefile2 tp/CMakeFiles/av-v0.dir/rule
+.PHONY : tp/CMakeFiles/av-v0.dir/rule
+
+# Convenience name for target.
+av-v0: tp/CMakeFiles/av-v0.dir/rule
+
+.PHONY : av-v0
+
+# fast build rule for target.
+av-v0/fast:
+	cd /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/av-v0.dir/build.make tp/CMakeFiles/av-v0.dir/build
+.PHONY : av-v0/fast
+
+# Convenience name for target.
 tp/CMakeFiles/tp_klt.dir/rule:
 	cd /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code && $(MAKE) -f CMakeFiles/Makefile2 tp/CMakeFiles/tp_klt.dir/rule
 .PHONY : tp/CMakeFiles/tp_klt.dir/rule
@@ -176,6 +191,33 @@ tp0-exemple: tp/CMakeFiles/tp0-exemple.dir/rule
 tp0-exemple/fast:
 	cd /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/tp0-exemple.dir/build.make tp/CMakeFiles/tp0-exemple.dir/build
 .PHONY : tp0-exemple/fast
+
+av-v0.o: av-v0.cpp.o
+
+.PHONY : av-v0.o
+
+# target to build an object file
+av-v0.cpp.o:
+	cd /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/av-v0.dir/build.make tp/CMakeFiles/av-v0.dir/av-v0.cpp.o
+.PHONY : av-v0.cpp.o
+
+av-v0.i: av-v0.cpp.i
+
+.PHONY : av-v0.i
+
+# target to preprocess a source file
+av-v0.cpp.i:
+	cd /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/av-v0.dir/build.make tp/CMakeFiles/av-v0.dir/av-v0.cpp.i
+.PHONY : av-v0.cpp.i
+
+av-v0.s: av-v0.cpp.s
+
+.PHONY : av-v0.s
+
+# target to generate assembly for a file
+av-v0.cpp.s:
+	cd /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/av-v0.dir/build.make tp/CMakeFiles/av-v0.dir/av-v0.cpp.s
+.PHONY : av-v0.cpp.s
 
 tp0-exemple.o: tp0-exemple.cpp.o
 
@@ -268,9 +310,13 @@ help:
 	@echo "... package_source"
 	@echo "... rebuild_cache"
 	@echo "... package"
+	@echo "... av-v0"
 	@echo "... tp_klt"
 	@echo "... tp1"
 	@echo "... tp0-exemple"
+	@echo "... av-v0.o"
+	@echo "... av-v0.i"
+	@echo "... av-v0.s"
 	@echo "... tp0-exemple.o"
 	@echo "... tp0-exemple.i"
 	@echo "... tp0-exemple.s"
