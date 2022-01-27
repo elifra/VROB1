@@ -31,6 +31,8 @@ visp3/core/vpExponentialMap.h
 -
 visp3/core/vpVelocityTwistMatrix.h
 -
+cmath
+-
 visp3/io/vpImageIo.h
 -
 
