@@ -588,17 +588,175 @@ tp3DVisualServoing()
 void
 tp2DVisualServoingFourPointMvt()
 {
+    //-------------------------------------------------------------
+    // Mise en oeuvre des courbes
 
-/*
-    reprendre votre code pour 4 points
-    au debut de la boucle d'av vous considerer que les points sont en mouvement (o
-            while (fabs(e.sumSquare()) > 1e-16)
-            {
-                // les points sont animés d'un mouvement de 1cm/s en x dans Rw
-                for (int i = 0 ; i < 4 ; i++) wX[i][0] += 0.01 ;
-            }
+    vpPlot plot(4, 700, 700, 100, 200, "Curves...");
 
-*/
+
+    char title[40];
+    strncpy( title, "||e||", 40 );
+    plot.setTitle(0,title);
+    plot.initGraph(0,1);
+
+    strncpy( title, "x-xd", 40 );
+    plot.setTitle(1, title);
+    plot.initGraph(1,8);
+
+    strncpy( title, "camera velocity", 40 );
+    plot.setTitle(2, title);
+    plot.initGraph(2,6);
+
+
+    strncpy( title, "camera position", 40 );
+    plot.setTitle(3, title);
+    plot.initGraph(3,6);
+
+    //-------------------------------------------------------------
+    // Affichage des images
+    vpImage<unsigned char> I(400,600) ;
+    vpDisplayX d ;
+    d.init(I) ;
+    vpDisplay::display(I);
+    vpCameraParameters cam(300,300,300,200) ;
+
+     //-------------------------------------------------------------
+
+
+    //positions initiale (à tester)
+    //vpHomogeneousMatrix cTw (-0.2, -0.1, 1.3, vpMath::rad(10), vpMath::rad(20), vpMath::rad(30) ) ;
+     // vpHomogeneousMatrix cTw (0.2,0.1,1.3,  0,0,vpMath::rad(5)) ;
+      // vpHomogeneousMatrix cTw (0,0,1,  0,0,vpMath::rad(45)) ;
+      vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(90)) ;
+    //vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(180)) ;
+
+    // position finale
+    vpHomogeneousMatrix cdTw (0,0,1,  0,0,0) ;
+
+
+
+    // position des point dans le repere monde Rw
+    vpColVector wX[4] ;
+    for (int i = 0 ; i < 4 ; i++) wX[i].resize(3) ;
+
+    double M = 0.5 ;
+    wX[0][0] = -M     ; wX[0][1] = -M     ; wX[0][2] = 0 ;
+    wX[1][0] = M ;      wX[1][1] = -M     ; wX[1][2] = 0 ;
+    wX[2][0] = M ;      wX[2][1] =  M;      wX[2][2] = 0 ;
+    wX[3][0] =  -M    ; wX[3][1] =  M;      wX[3][2] = 0 ;
+
+    int size ;
+    vpColVector e(8,1) ; //
+
+    vpColVector x1(2), xd1(2,0) , Xd1(3,0) ;
+    vpColVector x2(2), xd2(2,0) , Xd2(3,0) ;
+    vpColVector x3(2), xd3(2,0) , Xd3(3,0) ;
+    vpColVector x4(2), xd4(2,0) , Xd4(3,0) ;
+
+    //initialisation de la position désire des points dans l'image en fonction de cdTw
+    changeFrame(wX[0],cdTw,Xd1);
+    project(Xd1,xd1);
+    changeFrame(wX[1],cdTw,Xd2);
+    project(Xd2,xd2);
+    changeFrame(wX[2],cdTw,Xd3);
+    project(Xd3,xd3);
+    changeFrame(wX[3],cdTw,Xd4);
+    project(Xd4,xd4);
+
+    vpColVector v(6) ;
+    double lambda = 0.4;
+    int iter = 0 ;
+    cout << ("before while") << endl;
+
+
+    vpMatrix Lx;
+    
+    vpColVector e_estimation(8,0);
+    double mu = 0.005; // = lambda/4
+    
+    while (fabs(e.sumSquare()) > 1e-16)
+    {
+        // les points sont animés d'un mouvement de 1cm/s en x dans Rw
+        for (int i = 0 ; i < 4 ; i++) wX[i][0] += 0.01 ;
+
+        //MISE À JOUR de la position courante des points dans l'image en fonction de cTw
+        vpColVector cX1(3);
+        changeFrame(wX[0],cTw,cX1);
+        project(cX1,x1);
+
+        vpColVector cX2(3);
+        changeFrame(wX[1],cTw,cX2);
+        project(cX2,x2);
+
+        vpColVector cX3(3);
+        changeFrame(wX[2],cTw,cX3);
+        project(cX3,x3);
+
+        vpColVector cX4(3);
+        changeFrame(wX[3],cTw,cX4);
+        project(cX4,x4);
+
+        // Calcul de la matrice d'interaction
+        Lx.clear();
+
+        vpMatrix Lx1(2,6) ;
+        computeInteractionMatrix(cX1,x1[0],x1[1],Lx1);
+        vpMatrix Lx2(2,6) ;
+        computeInteractionMatrix(cX2,x2[0],x2[1],Lx2);
+        vpMatrix Lx3(2,6) ;
+        computeInteractionMatrix(cX3,x3[0],x3[1],Lx3);
+        vpMatrix Lx4(2,6) ;
+        computeInteractionMatrix(cX4,x4[0],x4[1],Lx4);
+
+        Lx.stack(Lx1);
+        Lx.stack(Lx2);
+        Lx.stack(Lx3);
+        Lx.stack(Lx4);
+
+        //calcul de l'erreur
+
+        e[0] = x1[0]-xd1[0]; e[1] = x1[1]-xd1[1];
+        e[2] = x2[0]-xd2[0]; e[3] = x2[1]-xd2[1];
+        e[4] = x3[0]-xd3[0]; e[5] = x3[1]-xd3[1];
+        e[6] = x4[0]-xd4[0]; e[7] = x4[1]-xd4[1];
+
+        //calcul de la loi de commande
+        v = -lambda*Lx.pseudoInverse()*e - mu*Lx.pseudoInverse()*e_estimation;
+
+        if(e.sum() > 0) e_estimation += e;
+
+        //mise à jour de la position de la caméra
+        cTw = vpExponentialMap::direct(v).inverse()* cTw ;
+
+        cout << "iter "<< iter <<" : "<< e.t() << endl ;
+        iter++ ;
+
+       //mise a jour des courbes
+        vpPoseVector ctw(cTw) ;
+        plot.plot(0,0,iter, e.sumSquare()) ;
+        plot.plot(1,iter, e) ;
+        plot.plot(2,iter, v) ;
+        plot.plot(3,iter, ctw) ;
+        //mise a jour de l'image
+        display(cam,I,x1,xd1) ;
+        display(cam,I,x2,xd2) ;
+        display(cam,I,x3,xd3) ;
+        display(cam,I,x4,xd4) ;
+    }
+    // sauvegarde des courbes
+    plot.saveData(0,"e.txt","#");
+    plot.saveData(1,"error.txt","#");
+    plot.saveData(2,"v.txt","#");
+    plot.saveData(3,"p.txt","#");
+
+    // sauvegarde de l'image finale
+    {
+        vpImage<vpRGBa>  Irgb ;
+        vpDisplay::getImage(I,Irgb) ;
+        vpImageIo::write(Irgb,"4pt.jpg") ;
+    }
+    cout << "Clicker sur l'image pour terminer" << endl ;
+    vpDisplay::getClick(I) ;
 }
 
 
@@ -607,8 +765,8 @@ int main(int argc, char** argv)
 
    //tp2DVisualServoingOnePoint() ;
      //tp2DVisualServoingFourPoint(true) ;
-    tp3DVisualServoing() ;
-      //tp2DVisualServoingFourPointMvt() ;
+    //tp3DVisualServoing() ;
+      tp2DVisualServoingFourPointMvt() ;
 
       /* TEST changeFrame() */
     /*vpColVector aX(3);
