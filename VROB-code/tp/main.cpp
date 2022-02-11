@@ -52,15 +52,13 @@ void affichage(const std::vector<std::string>& paths, vpMatrix A, vpColVector & 
     vpImageIo::write(Iuchar_pondere, path);
 }
 
-void  writeEigenFaceInImage(int m_w, int m_h, const std::string& path, vpColVector &v)
+void  writeEigenFaceInImage(int m_w, int m_h, const std::string& path, vpColVector v)
 {
-    double maxV = v.getMaxValue();
-    double minV = v.getMinValue();
     vpImage<double> I(m_h,m_w);
     for(int i=0; i<m_h; i++)
         for(int j = 0; j<m_w; j++)
         {
-            I[i][j] = ((v[i*m_w+j]-minV)/(maxV-minV));
+            I[i][j] = (v[i*m_w+j]/255);
         }
     
     vpImage<unsigned char> Ic(m_h,m_w);
@@ -68,7 +66,7 @@ void  writeEigenFaceInImage(int m_w, int m_h, const std::string& path, vpColVect
     vpImageIo::write(Ic, path);
 }
 
-void buildMeanImage(const std::vector<std::string>& paths, vpMatrix& A, vpColVector & mean){
+void buildMeanImage(const std::vector<std::string>& paths, vpMatrix& A, vpColVector& mean){
     //CALCUL DE A
     int ind_i = 0;
     int ind_j = 0;
@@ -79,7 +77,7 @@ void buildMeanImage(const std::vector<std::string>& paths, vpMatrix& A, vpColVec
         vpImageConvert::convert(I,Id);
         for(int i = 0; i < I.getHeight(); i++) {
             for(int j = 0; j < I.getWidth(); j++) {
-                A[ind_i][ind_j] = Id[i][j];
+                A[ind_i][ind_j] = Id[i][j]/255.0;
                 ind_i++;
             }
         }
@@ -124,7 +122,7 @@ void ssd(vpImage<unsigned char>& I1,vpImage<unsigned char>& I2,vpImage<unsigned 
     }
 }
 
-void courbeErreurPrediction(vpColVector erreurPrediction){
+void courbeErreurPrediction(vpColVector& erreurPrediction){
     vpPlot plot(1);
 
     // Initialize the number of curve for each graphic
@@ -161,7 +159,7 @@ void project(const std::vector<std::string>& paths, vpMatrix & A, vpMatrix & U, 
     vpColVector Wk(k);
     vpImage<unsigned char> I;
     std::string name;
-    if(false && num_image<=A.getCols()){        
+    if(num_image<=A.getCols()){        
         cout<<"L'image predite fait partie des images de references"<<endl;
         //Calcul Image origine
         I = vectToImage(A.getCol(num_image-1)+mean,"image_origine_"+std::to_string(num_image));
@@ -177,9 +175,10 @@ void project(const std::vector<std::string>& paths, vpMatrix & A, vpMatrix & U, 
         cout<<"L'image predite ne fait pas partie des images de references"<<endl;
         //Calcul Image origine
         std::ostringstream ss;
-        int num_doss = int((num_image)/10);
-        ss << "../att_faces/s" << num_doss << "/" << num_image -((num_doss-1)*10) << ".pgm";
-        vpImageIo::read(I,ss.str());
+        int num_doss = int((num_image)/7) + 1;
+        // ss << "../att_faces/s" << num_doss << "/" << num_image -((num_doss-1)*7) << ".pgm";
+        // cout<< ss.str()<<endl;
+        vpImageIo::read(I,path_test);
         //vpImageIo::write(I, "../results_eigenface/image_test_origine.jpg");
 
         //Calcul Wk test
@@ -189,11 +188,10 @@ void project(const std::vector<std::string>& paths, vpMatrix & A, vpMatrix & U, 
         int ind = 0;
         for(int i = 0; i < 112; i++) {
             for(int j = 0; j < 92; j++) {
-                Ic[ind] = Id[i][j] - mean[ind];
-                ind+=1;
+                Ic[ind] = Id[i][j]/255.0 -mean[ind];
+                ind++;
             }
         }
-        cout<<(A.getCol(num_image-1)-Ic).sum()<<endl;
         //Calcul Image origine
         I = vectToImage(Ic+mean,"image_test_origine");
     
@@ -225,7 +223,7 @@ void project(const std::vector<std::string>& paths, vpMatrix & A, vpMatrix & U, 
     vpImage<unsigned char> erreur(112,92);// = I-I_reconstruite;
     ssd(I_reconstruite,I,erreur);
     cout << "MSE = " << erreur.getSum()/(112*92) << endl;
-    std::string path = "../results_eigenface/erreur"+std::to_string(num_image)+".jpg";
+    std::string path = "../results_eigenface/erreur"+name+".jpg";
     vpImageIo::write(erreur, path);
 }
 
@@ -262,6 +260,61 @@ void courbeCumulValPropre(vpColVector val_propre){
     }
 
     vpDisplay::getClick(plot.I);
+}
+
+void identification(const std::vector<std::string>& paths_test,vpMatrix A, vpMatrix & U, vpColVector mean, int K){
+    cout<<"~~~~~~identification~~~~~~"<<endl;
+    vpImage<double> i_result(paths_test.size(),A.getCols());
+    int ind_test = 0;
+
+    //calcul image ref dans le sous ensemble image
+    vpMatrix W_refs(K,A.getCols());
+    for(int ind_ref = 0;ind_ref<A.getCols();ind_ref++){
+        //Calcul de l'image de ref courante dans le sous espace des images
+        vpColVector Wk_ref(K);
+        for(int i = 0; i < K; i++) {
+            vpColVector Ukt = U.getCol(i);
+            W_refs[i][ind_ref] = Ukt*A.getCol(ind_ref);
+        }
+    }
+
+    for(std::string path_test:paths_test){
+        cout<<"["<<ind_test<<"/"<<paths_test.size()<<"]"<<endl;
+        //Calcul de l'image test dans le sous espace des images
+        vpImage<unsigned char> I;
+        vpImageIo::read(I,path_test);
+        vpImage<double> Id(112,92);
+        vpImageConvert::convert(I,Id);
+        vpColVector Ic(112*92);
+        int ind = 0;
+        for(int i = 0; i < 112; i++) {
+            for(int j = 0; j < 92; j++) {
+                Ic[ind] = Id[i][j]/255.0 -mean[ind];
+                ind++;
+            }
+        }    
+    
+        vpColVector Wk_test(K);
+        for(int i = 0; i < K; i++) {
+            vpColVector Ukt = U.getCol(i);
+            Wk_test[i] = Ukt*Ic;
+        }          
+        
+        for(int ind_ref = 0;ind_ref<A.getCols();ind_ref++){    
+            double e = 0;
+            vpColVector v_erreur = (Wk_test-W_refs.getCol(ind_ref));
+            for(int i =0;i<v_erreur.size();i++){
+                e += v_erreur[i]*v_erreur[i];
+            }
+
+            i_result[ind_test][ind_ref] = e;
+        }
+        ind_test++;
+    }
+    vpImage<unsigned char> i_resultc(paths_test.size(),A.getCols());
+    vpImageConvert::convert(i_result,i_resultc);
+    std::string path = "../results_eigenface/Image_bizarre_mais_demandee.jpg";
+    vpImageIo::write(i_resultc, path);
 }
 
 void buildBDFaces(const std::vector<std::string>& paths,const std::vector<std::string>& paths_test)
@@ -304,11 +357,14 @@ void buildBDFaces(const std::vector<std::string>& paths,const std::vector<std::s
     U.svd(S_valPropre, sertArien);
     eigenface(U,S_valPropre);
 
-    project(paths,A,U,m_vMean,300,100,paths_test[10]);
+    project(paths,A,U,m_vMean,300,300,paths_test[10]);
     
     affichage(paths,A,m_vMean,11);
 
     courbeCumulValPropre(S_valPropre);
+
+    identification(paths_test,A,U,m_vMean,20);
+
 
     std::cout << "[INFO] Fin calcul BD ... " << std::endl;
 }
@@ -349,11 +405,11 @@ int main()
 {
 	std::cout << "[INFO] Construction du path ..." << std::endl;
 	std::vector<std::string> paths_ref;
-    std::vector<std::string> path_test;
-    buildPathImagesAttFaces(paths_ref,path_test,30);
+    std::vector<std::string> paths_test;
+    buildPathImagesAttFaces(paths_ref,paths_test,30);
 	std::cout << "[INFO] Creation de base de donnees ..." << std::endl;
 	
-    buildBDFaces(paths_ref,path_test);
+    buildBDFaces(paths_ref,paths_test);
 	
     //testErreurVpconvert(paths);
 
