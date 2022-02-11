@@ -1,4 +1,4 @@
-# Install script for directory: /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/tp
+# Install script for directory: /home/thomas/Documents/VROB1/VROB-code/tp
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

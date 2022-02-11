@@ -1,4 +1,4 @@
-# Install script for directory: /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code
+# Install script for directory: /home/thomas/Documents/VROB1/VROB-code
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/tp/cmake_install.cmake")
+  include("/home/thomas/Documents/VROB1/VROB-code/tp/cmake_install.cmake")
 
 endif()
 
@@ -51,5 +51,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/thomas/Documents/VROB1/VROB-code/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

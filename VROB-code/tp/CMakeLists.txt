@@ -40,6 +40,7 @@ SET (SOURCE
   tp1.cpp
   tp_klt.cpp
   av-v0.cpp
+  main.cpp
 )
 
 # rule for binary build

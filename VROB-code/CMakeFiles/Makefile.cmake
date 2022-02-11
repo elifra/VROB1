@@ -13,12 +13,11 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeLists.txt"
   "CMakeModules/FindDoxygen.cmake"
   "CMakeModules/cmake_uninstall.cmake.in"
-  "doc/config-doxygen.in"
   "tp/CMakeLists.txt"
-  "/usr/local/visp-ws/visp-build/VISPConfig-version.cmake"
-  "/usr/local/visp-ws/visp-build/VISPConfig.cmake"
-  "/usr/local/visp-ws/visp-build/VISPModules.cmake"
-  "/usr/local/visp-ws/visp-build/VISPUse.cmake"
+  "/home/thomas/visp-ws/visp-build/VISPConfig-version.cmake"
+  "/home/thomas/visp-ws/visp-build/VISPConfig.cmake"
+  "/home/thomas/visp-ws/visp-build/VISPModules.cmake"
+  "/home/thomas/visp-ws/visp-build/VISPUse.cmake"
   "/usr/share/cmake-3.16/Modules/CMakeCInformation.cmake"
   "/usr/share/cmake-3.16/Modules/CMakeCXXInformation.cmake"
   "/usr/share/cmake-3.16/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake"
@@ -35,9 +34,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/usr/share/cmake-3.16/Modules/Compiler/GNU-C.cmake"
   "/usr/share/cmake-3.16/Modules/Compiler/GNU-CXX.cmake"
   "/usr/share/cmake-3.16/Modules/Compiler/GNU.cmake"
-  "/usr/share/cmake-3.16/Modules/FindLATEX.cmake"
-  "/usr/share/cmake-3.16/Modules/FindPackageHandleStandardArgs.cmake"
-  "/usr/share/cmake-3.16/Modules/FindPackageMessage.cmake"
   "/usr/share/cmake-3.16/Modules/InstallRequiredSystemLibraries.cmake"
   "/usr/share/cmake-3.16/Modules/Internal/CMakeCheckCompilerFlag.cmake"
   "/usr/share/cmake-3.16/Modules/Platform/Linux-GNU-C.cmake"
@@ -56,7 +52,6 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
-  "doc/config-doxygen"
   "cmake_uninstall.cmake"
   "CPackConfig.cmake"
   "CPackSourceConfig.cmake"
@@ -67,7 +62,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/uninstall.dir/DependInfo.cmake"
-  "CMakeFiles/html-doc.dir/DependInfo.cmake"
+  "tp/CMakeFiles/main.dir/DependInfo.cmake"
   "tp/CMakeFiles/av-v0.dir/DependInfo.cmake"
   "tp/CMakeFiles/tp_klt.dir/DependInfo.cmake"
   "tp/CMakeFiles/tp1.dir/DependInfo.cmake"

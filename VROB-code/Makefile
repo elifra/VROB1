@@ -48,18 +48,18 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code
+CMAKE_SOURCE_DIR = /home/thomas/Documents/VROB1/VROB-code
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code
+CMAKE_BINARY_DIR = /home/thomas/Documents/VROB1/VROB-code
 
 #=============================================================================
 # Targets provided globally by CMake.
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
+	/usr/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -70,7 +70,7 @@ edit_cache/fast: edit_cache
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
-	/usr/bin/cpack --config ./CPackSourceConfig.cmake /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/CPackSourceConfig.cmake
+	/usr/bin/cpack --config ./CPackSourceConfig.cmake /home/thomas/Documents/VROB1/VROB-code/CPackSourceConfig.cmake
 .PHONY : package_source
 
 # Special rule for the target package_source
@@ -102,9 +102,9 @@ package/fast: package
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/CMakeFiles /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/thomas/Documents/VROB1/VROB-code/CMakeFiles /home/thomas/Documents/VROB1/VROB-code/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/thomas/Documents/VROB1/VROB-code/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -146,17 +146,17 @@ uninstall/fast:
 .PHONY : uninstall/fast
 
 #=============================================================================
-# Target rules for targets named html-doc
+# Target rules for targets named main
 
 # Build rule for target.
-html-doc: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 html-doc
-.PHONY : html-doc
+main: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 main
+.PHONY : main
 
 # fast build rule for target.
-html-doc/fast:
-	$(MAKE) -f CMakeFiles/html-doc.dir/build.make CMakeFiles/html-doc.dir/build
-.PHONY : html-doc/fast
+main/fast:
+	$(MAKE) -f tp/CMakeFiles/main.dir/build.make tp/CMakeFiles/main.dir/build
+.PHONY : main/fast
 
 #=============================================================================
 # Target rules for targets named av-v0
@@ -221,7 +221,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... package"
 	@echo "... uninstall"
-	@echo "... html-doc"
+	@echo "... main"
 	@echo "... av-v0"
 	@echo "... tp_klt"
 	@echo "... tp1"

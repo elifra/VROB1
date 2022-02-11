@@ -35,11 +35,11 @@
 #
 #############################################################################
 
-IF(NOT EXISTS "/private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/install_manifest.txt")
-  #MESSAGE("Cannot find install manifest: \"/private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/install_manifest.txt\"")
+IF(NOT EXISTS "/home/thomas/Documents/VROB1/VROB-code/install_manifest.txt")
+  #MESSAGE("Cannot find install manifest: \"/home/thomas/Documents/VROB1/VROB-code/install_manifest.txt\"")
   MESSAGE("There is no files to uninstall")
-ELSE(NOT EXISTS "/private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/install_manifest.txt")
-  FILE(READ "/private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/install_manifest.txt" files)
+ELSE(NOT EXISTS "/home/thomas/Documents/VROB1/VROB-code/install_manifest.txt")
+  FILE(READ "/home/thomas/Documents/VROB1/VROB-code/install_manifest.txt" files)
   STRING(REGEX REPLACE "\n" ";" files "${files}")
   FOREACH(file ${files})
     MESSAGE(STATUS "Uninstalling \"${file}\"")
@@ -58,4 +58,4 @@ ELSE(NOT EXISTS "/private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/
     ENDIF(EXISTS "${file}")
   ENDFOREACH(file)
 
-ENDIF(NOT EXISTS "/private/student/5/35/18007735/Documents/ESIR3/VROB1/VROB-code/install_manifest.txt")
+ENDIF(NOT EXISTS "/home/thomas/Documents/VROB1/VROB-code/install_manifest.txt")
