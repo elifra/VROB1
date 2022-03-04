@@ -253,10 +253,10 @@ tp2DVisualServoingFourPoint(bool pos_courante)
 
     //positions initiale (à tester)
     //vpHomogeneousMatrix cTw (-0.2, -0.1, 1.3, vpMath::rad(10), vpMath::rad(20), vpMath::rad(30) ) ;
-     // vpHomogeneousMatrix cTw (0.2,0.1,1.3,  0,0,vpMath::rad(5)) ;
-      // vpHomogeneousMatrix cTw (0,0,1,  0,0,vpMath::rad(45)) ;
-      vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(90)) ;
-    //vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(180)) ;
+    // vpHomogeneousMatrix cTw (0.2,0.1,1.3,  0,0,vpMath::rad(5)) ;
+    // vpHomogeneousMatrix cTw (0,0,1,  0,0,vpMath::rad(45)) ;
+    //vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(90)) ;
+    vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(180)) ;
 
     // position finale
     vpHomogeneousMatrix cdTw (0,0,1,  0,0,0) ;
@@ -443,8 +443,6 @@ computeInteractionMatrix3D(vpHomogeneousMatrix & ceTc, vpMatrix & Ls)
 void
 tp3DVisualServoing()
 {
-
-
     vpTRACE("begin" ) ;
 
     vpPlot plot(4, 700, 700, 100, 200, "Curves...");
@@ -495,9 +493,14 @@ tp3DVisualServoing()
 
     
 
-    //Definition de la scene
-    vpHomogeneousMatrix cTw (-0.2, -0.1, 1.3,
-                             vpMath::rad(10), vpMath::rad(20), vpMath::rad(30) ) ;
+    //positions initiale (à tester)
+    //vpHomogeneousMatrix cTw (-0.2, -0.1, 1.3, vpMath::rad(10), vpMath::rad(20), vpMath::rad(30) ) ;
+    //vpHomogeneousMatrix cTw (0.2,0.1,1.3,  0,0,vpMath::rad(5)) ;
+    //vpHomogeneousMatrix cTw (0,0,1,  0,0,vpMath::rad(45)) ;
+    //vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(90)) ;
+    vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(180)) ;
+
+    // position finale
     vpHomogeneousMatrix cdTw (0,0,1,  0,0,0) ;
 
     //initialisation de la position désire des points dans l'image en fonction de cdTw
@@ -625,9 +628,9 @@ tp2DVisualServoingFourPointMvt()
 
     //positions initiale (à tester)
     //vpHomogeneousMatrix cTw (-0.2, -0.1, 1.3, vpMath::rad(10), vpMath::rad(20), vpMath::rad(30) ) ;
-     // vpHomogeneousMatrix cTw (0.2,0.1,1.3,  0,0,vpMath::rad(5)) ;
-      // vpHomogeneousMatrix cTw (0,0,1,  0,0,vpMath::rad(45)) ;
-      vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(90)) ;
+    // vpHomogeneousMatrix cTw (0.2,0.1,1.3,  0,0,vpMath::rad(5)) ;
+    // vpHomogeneousMatrix cTw (0,0,1,  0,0,vpMath::rad(45)) ;
+    vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(90)) ;
     //vpHomogeneousMatrix cTw (0, 0, 1,  0, 0, vpMath::rad(180)) ;
 
     // position finale
@@ -763,10 +766,10 @@ tp2DVisualServoingFourPointMvt()
 int main(int argc, char** argv)
 {
 
-   //tp2DVisualServoingOnePoint() ;
-     //tp2DVisualServoingFourPoint(true) ;
-    //tp3DVisualServoing() ;
-      tp2DVisualServoingFourPointMvt() ;
+    //tp2DVisualServoingOnePoint() ;
+    //tp2DVisualServoingFourPoint(true) ;
+    tp3DVisualServoing() ;
+    //tp2DVisualServoingFourPointMvt() ;
 
       /* TEST changeFrame() */
     /*vpColVector aX(3);
