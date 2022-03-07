@@ -117,12 +117,12 @@ void eigenface(vpMatrix & U, vpColVector & S) {
 void ssd(vpImage<unsigned char>& I1,vpImage<unsigned char>& I2,vpImage<unsigned char>& e){
     for(int i = 0; i < 112; i++) {
         for(int j = 0; j < 92; j++) {
-            e[i][j] = pow(double(I1[i][j])-double(I2[i][j]),2);
+            e[i][j] = pow(double(I1[i][j])-double(I2[i][j]),2)/255; //divisé par 255 au carré mais multiplié par 255
         }
     }
 }
 
-void courbeErreurPrediction(vpColVector& erreurPrediction){
+void courbeErreurPrediction(vpColVector& Wk, vpColVector & mean, vpMatrix & U,vpImage<unsigned char>& I, int k){
     vpPlot plot(1);
 
     // Initialize the number of curve for each graphic
@@ -145,8 +145,19 @@ void courbeErreurPrediction(vpColVector& erreurPrediction){
     strncpy(unit, "SSD", 40);
     plot.setUnitY(0, unit);
 
-    for(int i=0;i<erreurPrediction.size();i++){
-        plot.plot(0,0,i,erreurPrediction[i]);
+    for(int i =1;i<k;i++){
+        vpColVector Jp = mean;
+        vpColVector erreurPrediction(i);
+        for(int j = 0; j < i; j++) {
+            Jp += Wk[j]*U.getCol(j);        
+        }
+
+        vpImage<unsigned char> I_tmp = vectToImage(Jp,"",false);
+        vpImage<unsigned char> erreur_tmp(112,92);// = I-I_reconstruite;
+        ssd(I_tmp,I,erreur_tmp);   
+
+        std::cout<<vpColVector::mean(erreurPrediction)<<std::endl;
+        plot.plot(0,0,i,erreur_tmp.getMeanValue());
     }
 
     vpDisplay::getClick(plot.I);
@@ -155,10 +166,12 @@ void courbeErreurPrediction(vpColVector& erreurPrediction){
 
 void project(const std::vector<std::string>& paths, vpMatrix & A, vpMatrix & U, vpColVector & mean, int k, int num_image, std::string path_test) {
     k = min(k,(int)paths.size());
-    
+    std::cout<<"K = "<<k<<std::endl;
+
     vpColVector Wk(k);
     vpImage<unsigned char> I;
     std::string name;
+    
     if(num_image<=A.getCols()){        
         cout<<"L'image predite fait partie des images de references"<<endl;
         //Calcul Image origine
@@ -215,7 +228,7 @@ void project(const std::vector<std::string>& paths, vpMatrix & A, vpMatrix & U, 
         erreurPrediction[i] = erreur_tmp.getSum();
     }
 
-    courbeErreurPrediction(erreurPrediction);
+    courbeErreurPrediction(Wk,mean,U,I,k);
 
     vpImage<unsigned char> I_reconstruite = vectToImage(Jp,name);
 
@@ -268,18 +281,18 @@ void identification(const std::vector<std::string>& paths_test,vpMatrix A, vpMat
     int ind_test = 0;
 
     //calcul image ref dans le sous ensemble image
-    vpMatrix W_refs(K,A.getCols());
+    vpMatrix W_refs(210,A.getCols());
     for(int ind_ref = 0;ind_ref<A.getCols();ind_ref++){
         //Calcul de l'image de ref courante dans le sous espace des images
-        vpColVector Wk_ref(K);
-        for(int i = 0; i < K; i++) {
+        vpColVector Wk_ref(210);
+        for(int i = 0; i < 210; i++) {
             vpColVector Ukt = U.getCol(i);
             W_refs[i][ind_ref] = Ukt*A.getCol(ind_ref);
         }
     }
 
     for(std::string path_test:paths_test){
-        cout<<"["<<ind_test<<"/"<<paths_test.size()<<"]"<<endl;
+        cout<<"["<<ind_test+1<<"/"<<paths_test.size()<<"]"<<endl;
         //Calcul de l'image test dans le sous espace des images
         vpImage<unsigned char> I;
         vpImageIo::read(I,path_test);
@@ -294,8 +307,8 @@ void identification(const std::vector<std::string>& paths_test,vpMatrix A, vpMat
             }
         }    
     
-        vpColVector Wk_test(K);
-        for(int i = 0; i < K; i++) {
+        vpColVector Wk_test(210);
+        for(int i = 0; i < 210; i++) {
             vpColVector Ukt = U.getCol(i);
             Wk_test[i] = Ukt*Ic;
         }          
@@ -303,11 +316,56 @@ void identification(const std::vector<std::string>& paths_test,vpMatrix A, vpMat
         for(int ind_ref = 0;ind_ref<A.getCols();ind_ref++){    
             double e = 0;
             vpColVector v_erreur = (Wk_test-W_refs.getCol(ind_ref));
-            for(int i =0;i<v_erreur.size();i++){
+            for(int i =0;i<K;i++){
                 e += v_erreur[i]*v_erreur[i];
             }
 
             i_result[ind_test][ind_ref] = e;
+        }
+
+        //QUESTION 15
+        if(ind_test == 89)
+        {
+            int sigma = 100;
+            double cum = 0;
+            vpPlot plot(1);
+
+            // Initialize the number of curve for each graphic
+            plot.initGraph(0, 1);
+            // Set the color of the curves
+            plot.setColor(0, 0, vpColor::red);
+            // Set the titles of the graphic
+            char title[50];
+            strncpy(title, "Nombre de visage reconnus", 50);
+            plot.setTitle(0, title);
+            // Set the x axis legend of each curves
+            char unit[40];
+            strncpy(unit, "k", 40);
+            plot.setUnitX(0, unit);
+            // Set the y axis legend of each curves
+            strncpy(unit, "visages reconnus", 40);
+            plot.setUnitY(0, unit);
+            //range
+            plot.initRange(0,0,210,0,10);
+
+            for(int k = 0 ; k<210 ; k ++){
+                int nb_reconnu = 0;
+                for(int ind_ref = 0;ind_ref<A.getCols();ind_ref++){    
+                    double e = 0;
+                    vpColVector v_erreur = (Wk_test-W_refs.getCol(ind_ref));
+                    for(int i =0;i<k;i++){
+                        e += v_erreur[i]*v_erreur[i];
+                    }
+
+                    if (e < sigma){
+                        nb_reconnu++;
+                    }
+                }   
+                std::cout<<"k = "<<k<<" --> "<<nb_reconnu<<" visages reconnus"<<std::endl;
+                //if(nb_reconnu<=10)
+                plot.plot(0,0,k,nb_reconnu);             
+            }
+            vpDisplay::getClick(plot.I);
         }
         ind_test++;
     }
@@ -315,6 +373,33 @@ void identification(const std::vector<std::string>& paths_test,vpMatrix A, vpMat
     vpImageConvert::convert(i_result,i_resultc);
     std::string path = "../results_eigenface/Image_bizarre_mais_demandee.jpg";
     vpImageIo::write(i_resultc, path);
+
+    std::cout<<"Question 14 et 15"<<std::endl;
+
+    //QUESTION 14
+    int indiceVisageTest = 89; //On utilise le dernier visage test (indice 89)
+    int minSameClass, maxSameClass, minDiffClass, maxDiffClass;
+
+    minSameClass= 99999999;
+    maxSameClass= 0;
+    for (int i=203;i<210;i++){
+        if (i_result[indiceVisageTest][i] < minSameClass ) minSameClass = i_result[indiceVisageTest][i];
+        if (i_result[indiceVisageTest][i] > maxSameClass ) maxSameClass = i_result[indiceVisageTest][i];
+    }
+
+    minDiffClass = 99999999;
+    maxDiffClass = 0;
+    // 210 images de références
+    for (int i=0;i<203;i++){
+        if (i_result[indiceVisageTest][i] < minDiffClass ) minDiffClass = i_result[indiceVisageTest][i];
+        if (i_result[indiceVisageTest][i] > maxDiffClass ) maxDiffClass = i_result[indiceVisageTest][i];
+    }
+    std::cout<<"erreur minimale pour deux visages d'une même personne : "<<minSameClass<<std::endl;
+    std::cout<<"erreur maximale pour deux visages d'une même personne : "<<maxSameClass<<std::endl;
+    std::cout<<"erreur minimale pour deux visages d'une personne différentes : "<<minDiffClass<<std::endl;
+    std::cout<<"erreur maximale pour deux visages d'une personne différentes : "<<maxDiffClass<<std::endl;
+
+    //QUESTION 15
 }
 
 void buildBDFaces(const std::vector<std::string>& paths,const std::vector<std::string>& paths_test)
@@ -357,9 +442,9 @@ void buildBDFaces(const std::vector<std::string>& paths,const std::vector<std::s
     U.svd(S_valPropre, sertArien);
     eigenface(U,S_valPropre);
 
-    project(paths,A,U,m_vMean,300,300,paths_test[10]);
+    project(paths,A,U,m_vMean,120,1,paths_test[10]);
     
-    affichage(paths,A,m_vMean,11);
+    affichage(paths,A,m_vMean,16);
 
     courbeCumulValPropre(S_valPropre);
 
