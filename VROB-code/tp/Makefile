@@ -133,36 +133,6 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-tp/CMakeFiles/main.dir/rule:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f CMakeFiles/Makefile2 tp/CMakeFiles/main.dir/rule
-.PHONY : tp/CMakeFiles/main.dir/rule
-
-# Convenience name for target.
-main: tp/CMakeFiles/main.dir/rule
-
-.PHONY : main
-
-# fast build rule for target.
-main/fast:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/main.dir/build.make tp/CMakeFiles/main.dir/build
-.PHONY : main/fast
-
-# Convenience name for target.
-tp/CMakeFiles/av-v0.dir/rule:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f CMakeFiles/Makefile2 tp/CMakeFiles/av-v0.dir/rule
-.PHONY : tp/CMakeFiles/av-v0.dir/rule
-
-# Convenience name for target.
-av-v0: tp/CMakeFiles/av-v0.dir/rule
-
-.PHONY : av-v0
-
-# fast build rule for target.
-av-v0/fast:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/av-v0.dir/build.make tp/CMakeFiles/av-v0.dir/build
-.PHONY : av-v0/fast
-
-# Convenience name for target.
 tp/CMakeFiles/tp_klt.dir/rule:
 	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f CMakeFiles/Makefile2 tp/CMakeFiles/tp_klt.dir/rule
 .PHONY : tp/CMakeFiles/tp_klt.dir/rule
@@ -176,144 +146,6 @@ tp_klt: tp/CMakeFiles/tp_klt.dir/rule
 tp_klt/fast:
 	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/tp_klt.dir/build.make tp/CMakeFiles/tp_klt.dir/build
 .PHONY : tp_klt/fast
-
-# Convenience name for target.
-tp/CMakeFiles/tp1.dir/rule:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f CMakeFiles/Makefile2 tp/CMakeFiles/tp1.dir/rule
-.PHONY : tp/CMakeFiles/tp1.dir/rule
-
-# Convenience name for target.
-tp1: tp/CMakeFiles/tp1.dir/rule
-
-.PHONY : tp1
-
-# fast build rule for target.
-tp1/fast:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/tp1.dir/build.make tp/CMakeFiles/tp1.dir/build
-.PHONY : tp1/fast
-
-# Convenience name for target.
-tp/CMakeFiles/tp0-exemple.dir/rule:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f CMakeFiles/Makefile2 tp/CMakeFiles/tp0-exemple.dir/rule
-.PHONY : tp/CMakeFiles/tp0-exemple.dir/rule
-
-# Convenience name for target.
-tp0-exemple: tp/CMakeFiles/tp0-exemple.dir/rule
-
-.PHONY : tp0-exemple
-
-# fast build rule for target.
-tp0-exemple/fast:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/tp0-exemple.dir/build.make tp/CMakeFiles/tp0-exemple.dir/build
-.PHONY : tp0-exemple/fast
-
-av-v0.o: av-v0.cpp.o
-
-.PHONY : av-v0.o
-
-# target to build an object file
-av-v0.cpp.o:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/av-v0.dir/build.make tp/CMakeFiles/av-v0.dir/av-v0.cpp.o
-.PHONY : av-v0.cpp.o
-
-av-v0.i: av-v0.cpp.i
-
-.PHONY : av-v0.i
-
-# target to preprocess a source file
-av-v0.cpp.i:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/av-v0.dir/build.make tp/CMakeFiles/av-v0.dir/av-v0.cpp.i
-.PHONY : av-v0.cpp.i
-
-av-v0.s: av-v0.cpp.s
-
-.PHONY : av-v0.s
-
-# target to generate assembly for a file
-av-v0.cpp.s:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/av-v0.dir/build.make tp/CMakeFiles/av-v0.dir/av-v0.cpp.s
-.PHONY : av-v0.cpp.s
-
-main.o: main.cpp.o
-
-.PHONY : main.o
-
-# target to build an object file
-main.cpp.o:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/main.dir/build.make tp/CMakeFiles/main.dir/main.cpp.o
-.PHONY : main.cpp.o
-
-main.i: main.cpp.i
-
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cpp.i:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/main.dir/build.make tp/CMakeFiles/main.dir/main.cpp.i
-.PHONY : main.cpp.i
-
-main.s: main.cpp.s
-
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cpp.s:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/main.dir/build.make tp/CMakeFiles/main.dir/main.cpp.s
-.PHONY : main.cpp.s
-
-tp0-exemple.o: tp0-exemple.cpp.o
-
-.PHONY : tp0-exemple.o
-
-# target to build an object file
-tp0-exemple.cpp.o:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/tp0-exemple.dir/build.make tp/CMakeFiles/tp0-exemple.dir/tp0-exemple.cpp.o
-.PHONY : tp0-exemple.cpp.o
-
-tp0-exemple.i: tp0-exemple.cpp.i
-
-.PHONY : tp0-exemple.i
-
-# target to preprocess a source file
-tp0-exemple.cpp.i:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/tp0-exemple.dir/build.make tp/CMakeFiles/tp0-exemple.dir/tp0-exemple.cpp.i
-.PHONY : tp0-exemple.cpp.i
-
-tp0-exemple.s: tp0-exemple.cpp.s
-
-.PHONY : tp0-exemple.s
-
-# target to generate assembly for a file
-tp0-exemple.cpp.s:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/tp0-exemple.dir/build.make tp/CMakeFiles/tp0-exemple.dir/tp0-exemple.cpp.s
-.PHONY : tp0-exemple.cpp.s
-
-tp1.o: tp1.cpp.o
-
-.PHONY : tp1.o
-
-# target to build an object file
-tp1.cpp.o:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/tp1.dir/build.make tp/CMakeFiles/tp1.dir/tp1.cpp.o
-.PHONY : tp1.cpp.o
-
-tp1.i: tp1.cpp.i
-
-.PHONY : tp1.i
-
-# target to preprocess a source file
-tp1.cpp.i:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/tp1.dir/build.make tp/CMakeFiles/tp1.dir/tp1.cpp.i
-.PHONY : tp1.cpp.i
-
-tp1.s: tp1.cpp.s
-
-.PHONY : tp1.s
-
-# target to generate assembly for a file
-tp1.cpp.s:
-	cd /home/thomas/Documents/VROB1/VROB-code && $(MAKE) -f tp/CMakeFiles/tp1.dir/build.make tp/CMakeFiles/tp1.dir/tp1.cpp.s
-.PHONY : tp1.cpp.s
 
 tp_klt.o: tp_klt.cpp.o
 
@@ -352,23 +184,7 @@ help:
 	@echo "... package_source"
 	@echo "... rebuild_cache"
 	@echo "... package"
-	@echo "... main"
-	@echo "... av-v0"
 	@echo "... tp_klt"
-	@echo "... tp1"
-	@echo "... tp0-exemple"
-	@echo "... av-v0.o"
-	@echo "... av-v0.i"
-	@echo "... av-v0.s"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
-	@echo "... tp0-exemple.o"
-	@echo "... tp0-exemple.i"
-	@echo "... tp0-exemple.s"
-	@echo "... tp1.o"
-	@echo "... tp1.i"
-	@echo "... tp1.s"
 	@echo "... tp_klt.o"
 	@echo "... tp_klt.i"
 	@echo "... tp_klt.s"

@@ -36,11 +36,7 @@
 #
 # If you want to add/remove a source, modify here
 SET (SOURCE
-  tp0-exemple.cpp
-  tp1.cpp
   tp_klt.cpp
-  av-v0.cpp
-  main.cpp
 )
 
 # rule for binary build

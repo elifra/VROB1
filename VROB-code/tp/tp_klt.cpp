@@ -141,10 +141,11 @@ std::vector<vpImagePoint> afficheHarris(vpImage<unsigned char>& I, double seuil,
 //FIN TRAITEMENT HARRIS
 
 //A SUPPRIMER, UTILE POUR TEST
+/*
     std::vector<vpImagePoint> newPt;
     newPt.push_back(ptHarris[int(ptHarris.size()/4)]);
     ptHarris = newPt;
-
+*/
     
     vpImageConvert::convert(I, Ires);
 
@@ -255,56 +256,59 @@ std::vector<vpImagePoint> KLT(vpImage<unsigned char>& I0,vpImage<unsigned char>&
 
     vpColVector un(2,1);
 
+    vpImage<vpRGBa> IresKLT(I.getRows(), I.getCols());
+    vpImageConvert::convert(I, IresKLT);        
+
     for(auto pt : harrisPoints){
 
-        cout << I0.getRows()<< " " << I0.getCols() << endl;
-        cout << I.getRows()<< " " << I.getCols() << endl;
+        // cout << I0.getRows()<< " " << I0.getCols() << endl;
+        // cout << I.getRows()<< " " << I.getCols() << endl;
 
         vpColVector h(2,0);
         vpImage<double> templateRef = createTemplate(I0,pt,tailleFenetre,h);
         vpImage<double> newtemplate = createTemplate(I,pt,tailleFenetre,h); 
         vpColVector oldH = h+un;
         //double eqm = EQM(templateRef, newtemplate);
-        int i =0;
-        while(norm(h-oldH) > 0.001) {
-            cout << norm(h-oldH)  << endl;
+        int i =0; 
+        bool valid = true;
+        while(norm(h-oldH) > 0.01 && i<50 && valid) {
             i++;
             vpColVector erreurTemplates = erreurImages(templateRef, newtemplate);
-
-            templateIgradX = createTemplate(IgradX,pt,tailleFenetre,h);
-            templateIgradY = createTemplate(IgradY,pt,tailleFenetre,h);
+            if(pt.get_i()-tailleFenetre+h[0]>=0 && pt.get_i()+tailleFenetre+h[0]< IgradX.getRows() &&
+            pt.get_j()-tailleFenetre+h[1]>=0 && pt.get_j()+tailleFenetre+h[1]< IgradX.getCols()) {
+                templateIgradX = createTemplate(IgradX,pt,tailleFenetre,h);
+                templateIgradY = createTemplate(IgradY,pt,tailleFenetre,h);
+            }
+            else{
+                valid = false;
+            }
 
             vpMatrix jacob = jacobienne(newtemplate, templateIgradX, templateIgradY);
             vpColVector dh = -jacob*erreurTemplates;
-            //cout << dh << endl;
-            oldH =  h;
-            //cout << "dh : " << dh << endl << endl;
-            h = h+0.1*dh;
-            //cout << "h : " << h << endl << endl;
-            //cout << "dh[0] = " << dh[0] << " dh[1] = " << dh[1] << endl;
 
-            newtemplate = createTemplate(I,pt,tailleFenetre,h);
+            oldH =  h;
+            h = h+0.1*dh;
+
+            if(pt.get_i()-tailleFenetre+h[0]>=0 && pt.get_i()+tailleFenetre+h[0]< IgradX.getRows() &&
+            pt.get_j()-tailleFenetre+h[1]>=0 && pt.get_j()+tailleFenetre+h[1]< IgradX.getCols()) {
+                newtemplate = createTemplate(I,pt,tailleFenetre,h);
+            }
+            else{
+                valid = false;
+            }
+            valid = (h[0]<5 && h[1]<5);
             //eqm = EQM(templateRef, newtemplate);
             //cout << eqm << endl;
-/*
-            vpImagePoint p(pt.get_i()+h[0],pt.get_j()+h[1]);
-            vpImage<vpRGBa> IresKLT(I.getRows(), I.getCols());
-            vpImageConvert::convert(I, IresKLT);
-            
-            vpImageDraw::drawCross(IresKLT,p,5,vpColor::green);
-            
-            vpDisplayX d2(IresKLT,100,100);
-            vpDisplay::setTitle(IresKLT, "KLT");
-            vpDisplay::display(IresKLT);
-            vpDisplay::flush(IresKLT) ;	
-            vpDisplay::getClick(IresKLT);
-*/
+        }     
+             
+        
+        vpImagePoint p(pt.get_i()+h[0],pt.get_j()+h[1]);   
+        if (p.get_i()>=0 && p.get_i()<IresKLT.getRows() && p.get_j()>=0 && p.get_j()<IresKLT.getCols() && valid){ 
+            vpImagePoint newPoint(pt.get_i()+h[0], pt.get_j()+h[1]);
+            newHarrisPoints.push_back(newPoint);
         }
-        cout << "old : "<< pt.get_i()<< " ; " <<pt.get_j() << endl;
-        cout << "new : "<< pt.get_i() + h[0]<<" ; " <<pt.get_j()+h[1] << endl;
-        vpImagePoint newPoint(pt.get_i()+h[0], pt.get_j()+h[1]);
-        newHarrisPoints.push_back(newPoint);
     }
+
     return newHarrisPoints;
 }
 
@@ -351,10 +355,17 @@ int main(int argc, char **argv)
 
         }
 
-        string filename1 = "images/image.000"+std::to_string(indexImage)+".pgm";
+        string filename1;
+        if(indexImage<10) filename1 = "images/image.000"+std::to_string(indexImage)+".pgm";
+        else if(indexImage<100) filename1 = "images/image.00"+std::to_string(indexImage)+".pgm";
+        else filename1 = "images/image.0"+std::to_string(indexImage)+".pgm";
+
         vpImageIo::read(I1,filename1); 
         
-        string filename2 = "images/image.000"+std::to_string(indexImage+1)+".pgm";
+        string filename2;
+        if(indexImage<10) filename2 = "images/image.000"+std::to_string(indexImage+1)+".pgm";
+        else if(indexImage<100) filename2 = "images/image.000"+std::to_string(indexImage+1)+".pgm";
+        else filename2 = "images/image.000"+std::to_string(indexImage+1)+".pgm";
         vpImageIo::read(I2,filename2);
 
         ptsHarris = newHarrisPoints;

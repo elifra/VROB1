@@ -146,32 +146,6 @@ uninstall/fast:
 .PHONY : uninstall/fast
 
 #=============================================================================
-# Target rules for targets named main
-
-# Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 main
-.PHONY : main
-
-# fast build rule for target.
-main/fast:
-	$(MAKE) -f tp/CMakeFiles/main.dir/build.make tp/CMakeFiles/main.dir/build
-.PHONY : main/fast
-
-#=============================================================================
-# Target rules for targets named av-v0
-
-# Build rule for target.
-av-v0: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 av-v0
-.PHONY : av-v0
-
-# fast build rule for target.
-av-v0/fast:
-	$(MAKE) -f tp/CMakeFiles/av-v0.dir/build.make tp/CMakeFiles/av-v0.dir/build
-.PHONY : av-v0/fast
-
-#=============================================================================
 # Target rules for targets named tp_klt
 
 # Build rule for target.
@@ -184,32 +158,6 @@ tp_klt/fast:
 	$(MAKE) -f tp/CMakeFiles/tp_klt.dir/build.make tp/CMakeFiles/tp_klt.dir/build
 .PHONY : tp_klt/fast
 
-#=============================================================================
-# Target rules for targets named tp1
-
-# Build rule for target.
-tp1: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tp1
-.PHONY : tp1
-
-# fast build rule for target.
-tp1/fast:
-	$(MAKE) -f tp/CMakeFiles/tp1.dir/build.make tp/CMakeFiles/tp1.dir/build
-.PHONY : tp1/fast
-
-#=============================================================================
-# Target rules for targets named tp0-exemple
-
-# Build rule for target.
-tp0-exemple: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 tp0-exemple
-.PHONY : tp0-exemple
-
-# fast build rule for target.
-tp0-exemple/fast:
-	$(MAKE) -f tp/CMakeFiles/tp0-exemple.dir/build.make tp/CMakeFiles/tp0-exemple.dir/build
-.PHONY : tp0-exemple/fast
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -221,11 +169,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... package"
 	@echo "... uninstall"
-	@echo "... main"
-	@echo "... av-v0"
 	@echo "... tp_klt"
-	@echo "... tp1"
-	@echo "... tp0-exemple"
 .PHONY : help
 
 
